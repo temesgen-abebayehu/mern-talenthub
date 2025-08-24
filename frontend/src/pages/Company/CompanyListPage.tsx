@@ -68,7 +68,7 @@ const CompanyListPage = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">My Companies</h1>
         <Link
-          to="/company/register"
+          to="/company/new"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
           Register New Company

@@ -29,6 +29,7 @@ const CompanyRegisterPage = () => {
     setFormData(prev => ({ ...prev, documents: file }));
   };
 
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -116,11 +117,16 @@ const CompanyRegisterPage = () => {
             accept=".pdf,.doc,.docx"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
+          {formData.documents && (
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-sm text-gray-600">{formData.documents.name}</span>
+            </div>
+          )}
         </div>
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || !formData.documents}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
         >
           {loading ? 'Registering...' : 'Register Company'}

@@ -38,13 +38,26 @@ const jobService = {
         return Job.findById(id);
     },
     async createJob(data, userId) {
-        // Find user and their company
-        const user = await (await import('../models/User.js')).default.findById(userId).populate('company');
-        if (!user || user.role !== 'companyOwner' || !user.isCompanyApproved) {
-            throw new Error('Only approved company owners can create jobs');
-        }
-        if (!user.company) throw new Error('Company not found for user');
-        return Job.create({ ...data, createdBy: userId, company: user.company._id });
+        // Require companyId in data
+        const { company: companyId } = data;
+        if (!companyId) throw new Error('Company is required');
+        // Find company and check ownership and approval
+        const company = await (await import('../models/Company.js')).default.findOne({ _id: companyId, owner: userId, status: 'approved' });
+        if (!company) throw new Error('You can only create jobs for your approved companies');
+        return Job.create({ ...data, createdBy: userId, company: companyId });
+    },
+
+    // Get all jobs for a specific company
+    async getJobsByCompany(companyId) {
+        return Job.find({ company: companyId });
+    },
+
+    // Get all jobs created by a company owner (across all their companies)
+    async getJobsByOwner(ownerId) {
+        // Find all companies owned by this user
+        const companies = await (await import('../models/Company.js')).default.find({ owner: ownerId });
+        const companyIds = companies.map(c => c._id);
+        return Job.find({ company: { $in: companyIds } });
     },
     async updateJob(id, data, userId) {
         // Find user

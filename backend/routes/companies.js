@@ -8,6 +8,8 @@ const router = express.Router();
 // POST /api/companies/review - Admin: approve or deny a company
 router.post('/review', auth, adminOnly, companyController.reviewCompany);
 
+// GET /api/companies/ - List all companies (admin only)
+router.get('/', auth, adminOnly, companyController.getAllCompanies);
 
 // POST /api/companies/ - Register a new company (companyOwner only)
 router.post('/', auth, companyController.registerCompany);

@@ -1,4 +1,3 @@
-
 import express from 'express';
 import jobController from '../controllers/jobController.js';
 import auth from '../middleware/auth.js';
@@ -35,5 +34,11 @@ router.get('/:id/applications', auth, validateJobId, jobController.getJobApplica
 
 // GET /api/jobs/:id/analytics - Get job application analytics
 router.get('/:id/analytics', auth, validateJobId, jobController.getJobAnalytics);
+
+// GET /api/jobs/company/:companyId - Get all jobs for a specific company
+router.get('/company/:companyId', jobController.getJobsByCompany);
+
+// GET /api/jobs/my - Get all jobs for the current company owner
+router.get('/my', auth, jobController.getJobsByOwner);
 
 export default router;

@@ -11,6 +11,8 @@ import jobRoutes from './routes/jobs.js';
 import applicationRoutes from './routes/applications.js';
 import userRoutes from './routes/users.js';
 import companyRoutes from './routes/companies.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
@@ -18,6 +20,15 @@ const app = express();
 
 // Connect to MongoDB
 connectDB();
+
+// Serve React static files
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// For any route not handled by API, serve React's index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+});
 
 // Middleware
 app.use(cors());

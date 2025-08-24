@@ -1,6 +1,20 @@
+
 import jobService from '../services/jobService.js';
 
 const jobController = {
+    async getJobsByCompany(req, res, next) {
+        try {
+            const jobs = await jobService.getJobsByCompany(req.params.companyId);
+            res.json(jobs);
+        } catch (err) { next(err); }
+    },
+
+    async getJobsByOwner(req, res, next) {
+        try {
+            const jobs = await jobService.getJobsByOwner(req.user.id);
+            res.json(jobs);
+        } catch (err) { next(err); }
+    },
     async getAllJobs(req, res, next) {
         try {
             const jobs = await jobService.getAllJobs(req.query);

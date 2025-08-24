@@ -36,16 +36,29 @@ export const JobProvider: React.FC<JobProviderProps> = ({ children }) => {
     const [error, setError] = useState<string | null>(null);
     const [total, setTotal] = useState<number>(0);
 
-    // Dummy getJobs implementation (replace with real API call)
-    const getJobs = (filters: any) => {
+    // Real getJobs implementation
+    const { jobAPI } = require('../services/jobService');
+    const getJobs = async (filters: any) => {
         setLoading(true);
         setError(null);
-        // Simulate async fetch
-        setTimeout(() => {
-            setJobs([]); // Replace with fetched jobs
-            setTotal(0); // Replace with fetched total
+        try {
+            // Only send non-empty filters
+            const params: any = {};
+            if (filters) {
+                Object.keys(filters).forEach(key => {
+                    if (filters[key]) params[key] = filters[key];
+                });
+            }
+            const { data } = await jobAPI.getAll(params);
+            setJobs(data.jobs || []);
+            setTotal(data.total || 0);
+        } catch (err: any) {
+            setError('Failed to fetch jobs');
+            setJobs([]);
+            setTotal(0);
+        } finally {
             setLoading(false);
-        }, 500);
+        }
     };
 
     return (

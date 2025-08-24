@@ -7,5 +7,5 @@ export const applicationAPI = {
     update: (id: string, data: any) => api.put(`/applications/${id}`, data),
     delete: (id: string) => api.delete(`/applications/${id}`),
     getUserApplications: (userId: string) => api.get(`/applications/user/${userId}`),
-    withdrawApplication: (applicationId: string) => api.post(`/applications/${applicationId}/withdraw`),
+    withdrawApplication: (applicationId: string) => api.delete(`/applications/${applicationId}`),
 };

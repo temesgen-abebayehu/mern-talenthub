@@ -1,4 +1,6 @@
+
 import applicationService from '../services/applicationService.js';
+import cloudinary from '../config/cloudinary.js';
 
 const applicationController = {
     async getAllApplications(req, res, next) {
@@ -27,7 +29,26 @@ const applicationController = {
     },
     async applyForJob(req, res, next) {
         try {
-            const application = await applicationService.applyForJob(req.body, req.user);
+            let resumeUrl = '';
+            if (req.files && req.files.resume) {
+                // Upload resume to Cloudinary as raw file
+                const doc = req.files.resume;
+                const originalName = doc.name || doc.originalname || 'resume';
+                const ext = originalName.split('.').pop();
+                const publicId = `resumes/${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${ext}`;
+                const uploadResult = await cloudinary.uploader.upload(doc.tempFilePath || doc.path, {
+                    folder: 'resumes',
+                    resource_type: 'raw',
+                    public_id: publicId,
+                    use_filename: true,
+                    unique_filename: false,
+                });
+                resumeUrl = uploadResult.secure_url;
+            }
+            const application = await applicationService.applyForJob({
+                ...req.body,
+                resume: resumeUrl,
+            }, req.user);
             res.status(201).json(application);
         } catch (err) { next(err); }
     },
@@ -39,7 +60,10 @@ const applicationController = {
     },
     async withdrawApplication(req, res, next) {
         try {
-            await applicationService.withdrawApplication(req.params.id, req.user);
+            const deleted = await applicationService.withdrawApplication(req.params.id, req.user);
+            if (!deleted) {
+                return res.status(404).json({ message: 'Application not found or not owned by user' });
+            }
             res.json({ message: 'Application withdrawn' });
         } catch (err) { next(err); }
     },

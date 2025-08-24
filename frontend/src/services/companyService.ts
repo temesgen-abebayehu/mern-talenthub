@@ -12,7 +12,11 @@ export interface Company {
 export const companyAPI = {
   getAllCompanies: async () => api.get('/companies'),
   getMyCompanies: async () => api.get('/companies/my'),
-  registerCompany: async (data: FormData) => api.post('/companies', data),
+  registerCompany: async (data: FormData) =>
+    api.post('/companies', data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
   deleteCompany: async (id: string) => api.delete(`/companies/${id}`),
-  reviewCompany: async ({ companyId, status, reason }: { companyId: string; status: string; reason?: string }) => api.put(`/companies/${companyId}/review`, { status, reason }),
+  reviewCompany: async ({ companyId, status, reason }: { companyId: string; status: string; reason?: string }) =>
+    api.post('/companies/review', { companyId, status, reason }),
 };

@@ -34,7 +34,16 @@ const applicationService = {
         // Only allow application to active jobs
         const job = await (await import('../models/Job.js')).default.findById(data.jobId);
         if (!job || job.status !== 'active') throw new Error('Job is not open for applications');
-        return Application.create({ ...data, userId: user.id });
+        // Only save allowed fields
+        const appData = {
+            jobId: data.jobId,
+            userId: user.id,
+            resume: data.resume,
+            coverLetter: data.coverLetter,
+            education: data.education,
+            gender: data.gender,
+        };
+        return Application.create(appData);
     },
     async updateApplicationStatus(id, status, user) {
         const app = await Application.findById(id);

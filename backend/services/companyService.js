@@ -31,20 +31,46 @@ export const reviewCompany = async (companyId, adminId, status, reason = '') => 
     return { message: `Company ${status}.` };
 };
 
-export const registerCompany = async (userId, data) => {
+import cloudinary from '../config/cloudinary.js';
+
+export const registerCompany = async (userId, data, files) => {
     const user = await User.findById(userId);
     if (!user || user.role !== 'companyOwner') throw new Error('Only company owners can register companies');
 
-    const { name, legalDetails, documents } = data;
-    if (!name || !legalDetails || !documents || !Array.isArray(documents) || documents.length === 0) {
-        throw new Error('Company name, legal details, and documents are required');
+    const { name, legalDetails } = data;
+    if (!name || !legalDetails) {
+        throw new Error('Company name and legal details are required');
+    }
+
+    // Handle document uploads
+    let documentUrls = [];
+    if (files && files.documents) {
+        const docs = Array.isArray(files.documents) ? files.documents : [files.documents];
+        for (const doc of docs) {
+            // Extract original filename and extension
+            const originalName = doc.name || doc.originalname || 'document';
+            const ext = originalName.split('.').pop();
+            const publicId = `company_documents/${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${ext}`;
+            const uploadResult = await cloudinary.uploader.upload(doc.tempFilePath || doc.path, {
+                folder: 'company_documents',
+                resource_type: 'raw',
+                public_id: publicId,
+                use_filename: true,
+                unique_filename: false,
+            });
+            documentUrls.push(uploadResult.secure_url);
+        }
+    }
+
+    if (documentUrls.length === 0) {
+        throw new Error('At least one legal document must be uploaded');
     }
 
     const company = await Company.create({
         name,
         owner: user._id,
         legalDetails,
-        documents,
+        documents: documentUrls,
         status: 'pending',
         isActive: false
     });

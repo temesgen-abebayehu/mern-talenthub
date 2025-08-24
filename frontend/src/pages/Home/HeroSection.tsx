@@ -55,7 +55,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
             </>
           ) : user.role === 'companyOwner' ? (
             <Link
-              to="/company/new"
+              to="/jobs/create"
               className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
             >
               Post a Job

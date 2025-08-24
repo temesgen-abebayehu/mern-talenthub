@@ -20,8 +20,9 @@ const JobDetail: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>('');
     const [applied, setApplied] = useState<boolean>(false);
+    const [applicationId, setApplicationId] = useState<string | null>(null);
     const [applyMsg, setApplyMsg] = useState<string>('');
-    const { user } = useAuth() as { user: { role: string } };
+    const { user } = useAuth() as { user: { role: string, id?: string } };
 
     useEffect(() => {
         const fetchJob = async () => {
@@ -39,6 +40,28 @@ const JobDetail: React.FC = () => {
         fetchJob();
     }, [id]);
 
+    useEffect(() => {
+        // Check if user has applied for this job
+        const checkApplied = async () => {
+            if (!user || !user.id) return;
+            try {
+                const { data } = await api.get(`/applications/user/${user.id}`);
+                const found = data.find((app: any) => app.jobId === id);
+                if (found) {
+                    setApplied(true);
+                    setApplicationId(found._id);
+                } else {
+                    setApplied(false);
+                    setApplicationId(null);
+                }
+            } catch {
+                setApplied(false);
+                setApplicationId(null);
+            }
+        };
+        checkApplied();
+    }, [id, user]);
+
     const handleApply = async (e: FormEvent) => {
         e.preventDefault();
         setApplyMsg('');
@@ -46,8 +69,25 @@ const JobDetail: React.FC = () => {
             await api.post('/applications', { jobId: id });
             setApplied(true);
             setApplyMsg('Application submitted!');
+            // Refetch applicationId
+            const { data } = await api.get(`/applications/user/${user.id}`);
+            const found = data.find((app: any) => app.jobId === id);
+            if (found) setApplicationId(found._id);
         } catch (err: any) {
             setApplyMsg(err?.response?.data?.message || 'Application failed');
+        }
+    };
+
+    const handleWithdraw = async () => {
+        setApplyMsg('');
+        if (!applicationId) return;
+        try {
+            await api.delete(`/applications/${applicationId}`);
+            setApplied(false);
+            setApplicationId(null);
+            setApplyMsg('Application withdrawn.');
+        } catch (err: any) {
+            setApplyMsg(err?.response?.data?.message || 'Failed to withdraw application');
         }
     };
 
@@ -69,8 +109,13 @@ const JobDetail: React.FC = () => {
                     <button type="submit" className="bg-primary text-white px-4 py-2 rounded">Apply</button>
                 </form>
             )}
+            {user && user.role === 'user' && applied && (
+                <div className="mt-4 flex flex-col gap-2">
+                    <div className="text-green-600">You have applied for this job.</div>
+                    <button onClick={handleWithdraw} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded w-max">Withdraw Application</button>
+                </div>
+            )}
             {applyMsg && <div className="mt-2 text-green-600">{applyMsg}</div>}
-            {applied && <div className="mt-2 text-green-600">You have applied for this job.</div>}
         </section>
     );
 };

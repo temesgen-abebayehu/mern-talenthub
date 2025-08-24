@@ -1,3 +1,14 @@
+// Admin: get all companies
+export const getAllCompanies = async (req, res, next) => {
+    try {
+        // Only admin can access
+        if (!req.user || req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+        const companies = await Company.find().populate('owner', 'name email');
+        res.json(companies);
+    } catch (err) { next(err); }
+};
 import * as companyService from '../services/companyService.js';
 import Company from '../models/Company.js';
 
@@ -43,7 +54,8 @@ export const deleteCompany = async (req, res, next) => {
 
 export const registerCompany = async (req, res, next) => {
     try {
-        const company = await companyService.registerCompany(req.user.id, req.body);
+        // Pass req.files to service for document upload
+        const company = await companyService.registerCompany(req.user.id, req.body, req.files);
         res.status(201).json(company);
     } catch (err) { next(err); }
 };

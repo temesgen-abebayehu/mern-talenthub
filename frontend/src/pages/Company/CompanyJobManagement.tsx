@@ -1,4 +1,5 @@
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import { Link } from 'react-router-dom';
 import JobApplicationsModal from '../../components/jobs/JobApplicationsModal';
 import JobAnalyticsModal from '../../components/jobs/JobAnalyticsModal';
 import api from '../../services/api';
@@ -93,6 +94,7 @@ const CompanyJobManagement = forwardRef<any, {}>((props, ref) => {
                                 <button onClick={() => handleStatusChange(job._id, 'hired')} className="bg-blue-600 text-white px-3 py-1 rounded">Hired</button>
                                 <button onClick={() => handleDelete(job._id)} className="bg-red-600 text-white px-3 py-1 rounded">Delete</button>
                                 <button onClick={() => { setSelectedJobId(job._id || ''); setShowModal(true); }} className="bg-gray-700 text-white px-3 py-1 rounded">View Applications</button>
+                                <Link to={`/company/my/job/${job._id}/applications`} className="bg-cyan-700 text-white px-3 py-1 rounded">Manage Applicants</Link>
                                 <button onClick={() => { setAnalyticsJobId(job._id || ''); setShowAnalytics(true); }} className="bg-indigo-600 text-white px-3 py-1 rounded">Analytics</button>
                             </div>
                         </li>

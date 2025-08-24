@@ -39,7 +39,7 @@ const ApplicationsPage = () => {
     }
 
     try {
-      await applicationAPI.delete(applicationId);
+      await applicationAPI.withdrawApplication(applicationId);
       // Refresh the list
       fetchApplications();
     } catch (error) {

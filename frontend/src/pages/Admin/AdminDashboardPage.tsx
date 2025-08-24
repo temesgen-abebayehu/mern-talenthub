@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { companyAPI } from '../../services/companyService';
 import { jobAPI } from '../../services/jobService';
 import StatsCard from '../../components/admin/StatsCard';
-import PendingApprovalList from '../../components/admin/PendingApprovalList';
+import CompanyCategoryList from '../../components/admin/CompanyCategoryList';
 import RecentActivity from '../../components/admin/RecentActivity';
 
 const AdminDashboardPage = () => {
@@ -74,10 +74,10 @@ const AdminDashboardPage = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Pending Approvals */}
+        {/* Company Approvals by Category */}
         <div>
-          <h2 className="text-xl font-semibold mb-4">Pending Company Approvals</h2>
-          <PendingApprovalList />
+          <h2 className="text-xl font-semibold mb-4">Company Approvals</h2>
+          <CompanyCategoryList />
         </div>
 
         {/* Recent Activity */}

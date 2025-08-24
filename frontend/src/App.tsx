@@ -1,4 +1,8 @@
+import JobApplicationsPage from './pages/Company/JobApplicationsPage';
 import EmailVerification from './pages/Auth/EmailVerification';
+import JobCreatePage from './pages/Jobs/JobCreatePage';
+import CompanyJobManagement from './pages/Company/CompanyJobManagement';
+import JobApplyPage from './pages/Jobs/JobApplyPage'; // Import the JobApplyPage
 // src/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -16,12 +20,12 @@ import LoginPage from './pages/Auth/LoginPage';
 import RegisterPage from './pages/Auth/RegisterPage';
 import ForgotPasswordPage from './pages/Auth/ForgotPasswordPage';
 import ResetPasswordPage from './pages/Auth/ResetPasswordPage';
-import Jobs from './pages/Jobs/Jobs';
 import JobDetail from './pages/Jobs/JobDetail';
 import ProfilePage from './pages/Profile/ProfilePage';
 import ApplicationsPage from './pages/Profile/ApplicationsPage';
 import CompanyJobsPage from './pages/Company/CompanyJobsPage';
 import CompanyListPage from './pages/Company/CompanyListPage';
+import CompanyRegisterPage from './pages/Company/CompanyRegisterPage';
 import AdminDashboardPage from './pages/Admin/AdminDashboardPage';
 import CompanyApprovalPage from './pages/Admin/CompanyApprovalPage';
 import JobModerationPage from './pages/Admin/JobModerationPage';
@@ -85,15 +89,16 @@ function App() {
                   </MainLayout>
                 } />
 
-                <Route path="/jobs" element={
-                  <MainLayout>
-                    <Jobs />
-                  </MainLayout>
-                } />
 
                 <Route path="/jobs/:id" element={
                   <MainLayout>
                     <JobDetail />
+                  </MainLayout>
+                } />
+
+                <Route path="/jobs/:id/apply" element={
+                  <MainLayout>
+                    <JobApplyPage />
                   </MainLayout>
                 } />
 
@@ -162,10 +167,40 @@ function App() {
                     </MainLayout>
                   </ProtectedRoute>
                 } />
+                <Route path="/company/new" element={
+                  <ProtectedRoute requiredRole="companyOwner">
+                    <MainLayout>
+                      <CompanyRegisterPage />
+                    </MainLayout>
+                  </ProtectedRoute>
+                } />
                 <Route path="/company/:id/jobs" element={
                   <ProtectedRoute requiredRole="companyOwner">
                     <MainLayout>
                       <CompanyJobsPage />
+                    </MainLayout>
+                  </ProtectedRoute>
+                } />
+                <Route path="/company/:companyId/job/:jobId/applications" element={
+                  <ProtectedRoute requiredRole="companyOwner">
+                    <MainLayout>
+                      <JobApplicationsPage />
+                    </MainLayout>
+                  </ProtectedRoute>
+                } />
+                {/* Company Owner: Create Job */}
+                <Route path="/jobs/create" element={
+                  <ProtectedRoute requiredRole="companyOwner">
+                    <MainLayout>
+                      <JobCreatePage />
+                    </MainLayout>
+                  </ProtectedRoute>
+                } />
+                {/* Company Owner: Manage All My Jobs */}
+                <Route path="/jobs/my" element={
+                  <ProtectedRoute requiredRole="companyOwner">
+                    <MainLayout>
+                      <CompanyJobManagement />
                     </MainLayout>
                   </ProtectedRoute>
                 } />

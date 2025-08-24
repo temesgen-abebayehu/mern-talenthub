@@ -32,9 +32,8 @@ const CompanyJobsPage: React.FC = () => {
         const companiesResponse = await companyAPI.getMyCompanies();
         const companyData = companiesResponse.data.find((c: Company) => c._id === id);
         setCompany(companyData);
-        const jobsResponse = await jobAPI.getAll();
-        const filteredJobs = jobsResponse.data.filter((job: Job) => job.company === id);
-        setJobs(filteredJobs);
+        const jobsResponse = await jobAPI.getByCompany(id!);
+        setJobs(jobsResponse.data);
       } catch (err: any) {
         setError(err?.response?.data?.message || 'Failed to fetch company jobs');
       } finally {
@@ -167,7 +166,7 @@ const CompanyJobsPage: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Link
-                      to={`/applications/job/${job._id}`}
+                      to={`/company/my/job/${job._id}/applications`}
                       className="text-blue-600 hover:text-blue-900 text-sm"
                     >
                       View Applications ({job.applicationCount || 0})

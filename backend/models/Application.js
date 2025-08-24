@@ -12,6 +12,8 @@ const applicationSchema = new mongoose.Schema({
     status: { type: String, enum: ['applied', 'reviewed', 'shortlisted', 'rejected', 'hired'], default: 'applied' },
     resume: String,
     coverLetter: String,
+    education: String,
+    gender: { type: String, enum: ['male', 'female'] },
     notes: [noteSchema],
     rating: Number,
     feedback: String,

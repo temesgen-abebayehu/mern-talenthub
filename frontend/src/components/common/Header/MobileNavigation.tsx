@@ -29,7 +29,8 @@ const MobileNavigation = () => {
       return [
         ...commonItems,
         { path: '/company/my', label: 'My Companies', icon: '🏢' },
-        { path: '/company/new', label: 'Post Job', icon: '➕' },
+        { path: '/jobs/create', label: 'Create Job', icon: '➕' },
+        { path: '/jobs/my', label: 'Manage Jobs', icon: '🗂️' },
         { path: '/profile', label: 'Profile', icon: '👤' },
       ];
     }
@@ -89,11 +90,10 @@ const MobileNavigation = () => {
                     key={item.path}
                     to={item.path}
                     onClick={toggleMenu}
-                    className={`flex items-center space-x-3 px-3 py-3 rounded-md text-sm font-medium transition-colors ${
-                      location.pathname === item.path
+                    className={`flex items-center space-x-3 px-3 py-3 rounded-md text-sm font-medium transition-colors ${location.pathname === item.path
                         ? 'bg-blue-100 text-blue-700'
                         : 'text-gray-600 hover:text-blue-600 hover:bg-gray-100'
-                    }`}
+                      }`}
                   >
                     <span className="text-lg">{item.icon}</span>
                     <span>{item.label}</span>
