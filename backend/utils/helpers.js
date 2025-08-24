@@ -15,3 +15,12 @@ export const generateResetToken = (user) => {
 export const verifyResetToken = (token) => {
     return jwt.verify(token, JWT_SECRET);
 };
+
+// Email verification token (valid for 24h)
+export const generateVerificationToken = (user) => {
+    return jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '24h' });
+};
+
+export const verifyVerificationToken = (token) => {
+    return jwt.verify(token, JWT_SECRET);
+};

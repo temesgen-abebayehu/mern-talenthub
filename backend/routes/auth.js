@@ -25,4 +25,11 @@ router.post('/forgot-password', validateForgotPassword, authController.forgotPas
 // @route   POST /api/auth/reset-password
 router.post('/reset-password', validateResetPassword, authController.resetPassword);
 
+// @route   POST /api/auth/verify-email
+router.get('/verify-email', authController.verifyEmail);
+
+// Admin: approve/reject company (should be protected by admin middleware in real use)
+router.post('/approve-company', authController.approveCompany);
+router.post('/reject-company', authController.rejectCompany);
+
 export default router;
