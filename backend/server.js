@@ -36,7 +36,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/companies', companyRoutes);
 
 // Health check
-app.get('/', (req, res) => {
+// Health check (API only)
+app.get('/api', (req, res) => {
     res.send('TalentHub API is running');
 });
 
@@ -45,8 +46,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 // Only serve index.html for non-API routes
+// For any non-API route, serve React's index.html
 app.get(/^\/(?!api).*/, (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
 // Error handler
