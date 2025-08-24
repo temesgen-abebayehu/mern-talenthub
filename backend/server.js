@@ -21,15 +21,6 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
-// Serve React static files
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-app.use(express.static(path.join(__dirname, '../frontend/build')));
-
-// For any route not handled by API, serve React's index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
-});
-
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -47,6 +38,15 @@ app.use('/api/companies', companyRoutes);
 // Health check
 app.get('/', (req, res) => {
     res.send('TalentHub API is running');
+});
+
+// Serve React static files
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// For any route not handled by API, serve React's index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
 // Error handler
