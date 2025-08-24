@@ -44,8 +44,8 @@ app.get('/', (req, res) => {
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-// For any route not handled by API, serve React's index.html
-app.get('*', (req, res) => {
+// Only serve index.html for non-API routes
+app.get(/^\/(?!api).*/, (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
