@@ -13,7 +13,7 @@ export async function sendResetPasswordEmail(email, token) {
         }
     });
 
-    const resetUrl = `http://localhost:3000/reset-password?token=${token}`;
+    const resetUrl = `https://talenthub-ust6.onrender.com//reset-password?token=${token}`;
     const mailOptions = {
         from: `TalentHub <${FROM_EMAIL}>`,
         to: email,
@@ -35,7 +35,7 @@ export async function sendVerificationEmail(email, token) {
             pass: process.env.SMTP_PASS
         }
     });
-    const verifyUrl = `http://localhost:3000/verify-email?email=${email}&token=${token}`;
+    const verifyUrl = `https://talenthub-ust6.onrender.com//verify-email?email=${email}&token=${token}`;
     const mailOptions = {
         from: `TalentHub <${FROM_EMAIL}>`,
         to: email,
